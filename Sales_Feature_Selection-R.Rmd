@@ -1,0 +1,72 @@
+---
+title: "Feature Selection"
+author: "Joy Muli"
+date: "11/14/2020"
+output:
+   md_document:
+    variant: markdown_github
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+```{r}
+df_feature <- read.csv(file = 'http://bit.ly/CarreFourDataset')
+head(df_feature)
+```
+
+# Feature Ranking
+# We will use the FSelector Package. This is a package containing functions for selecting attributes from a given dataset. 
+```{r}
+suppressWarnings(
+        suppressMessages(if
+                         (!require(FSelector, quietly=TRUE))
+                install.packages("FSelector")))
+library(FSelector)
+```
+
+```{r}
+num_cols <- unlist(lapply(df_feature, is.numeric))
+num_cols
+
+# Subset numeric columns
+data_num <- df_feature[ ,num_cols]
+```
+
+# From the FSelector package, we use the correlation coefficient as a unit of valuation. 
+# This would be one of the several algorithms contained 
+# in the FSelector package that can be used rank the variables.
+
+```{r}
+Scores <- linear.correlation(Total~., data_num)
+Scores
+
+```
+# Getting the top 5 most representative variables
+```{r}
+Subset <- cutoff.k(Scores, 5)
+as.data.frame(Subset)
+```
+
+# Getting the best variables
+```{r}
+Subset1 <-cutoff.k.percent(Scores, 0.4)
+as.data.frame(Subset1)
+```
+
+```{r}
+Subset1 <-cutoff.k.percent(Scores, 0.6)
+as.data.frame(Subset1)
+```
+
+```{r}
+Subset1 <-cutoff.k.percent(Scores, 0.8)
+as.data.frame(Subset1)
+```
+
+The most important features in descending order are 'Tax', 'cogs', 'gross.income', 'Quantity', 'Unit.price', 'Rating'
